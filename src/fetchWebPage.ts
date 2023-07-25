@@ -12,13 +12,35 @@ export async function fetchWebPage(url: string, limit = 3000) {
   if (typeof html !== "string") {
     return "Content cannot be retrieved."
   }
-  const $ = load(html)
+  let $ = load(html)
+  const ampLink = $('link[rel="amphtml"]').attr("href")
+  if (ampLink) {
+    try {
+      const ampRes = await axios.get(ampLink)
+      const ampHtml = ampRes.data
+      $ = load(ampHtml)
+      if (typeof ampHtml !== "string") {
+        return "Content cannot be retrieved."
+      }
+      $ = load(ampHtml)
+    } catch (e) { 
+      // pass
+    }
+  }
+
   $("script").remove()
+  $("noscript").remove()
   $("style").remove()
   $("iframe").remove()
   $("link").remove()
   $("meta").remove()
   $("select").remove()
-  // return $.html().slice(0, limit)
-  return $.text().slice(0, limit)
+  $("input").remove()
+  $("button").remove()
+  $("form").remove()
+  $("svg").remove()
+  $("video").remove()
+  $("audio").remove()
+
+  return $.text().replace(/ +/g, " ").replace(/\n/g, " ").slice(0, limit)
 }

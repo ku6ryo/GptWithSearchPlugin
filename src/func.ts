@@ -19,7 +19,7 @@ export const functions: ChatCompletionFunctions[] = [
   },
   {
     name: "searchWeb",
-    description: "Search the web. Returns a list of results.",
+    description: "Search the web. Returns a list of results. Please use this when you does not have clear answers.",
     parameters: {
       type: "object",
       properties: {
